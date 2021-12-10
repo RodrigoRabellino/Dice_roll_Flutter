@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:roll_dice/src/classes/die_class.dart';
 
 class DicePage extends StatefulWidget {
   const DicePage({Key? key}) : super(key: key);
@@ -9,7 +10,7 @@ class DicePage extends StatefulWidget {
   _DicePageState createState() => _DicePageState();
 }
 
-class _DicePageState extends State<DicePage> {
+class _DicePageState extends State<DicePage> with ChangeNotifier {
   final _diceList = [
     {"dieName": "D4", "value": 4, "icon": "icon"},
     {"dieName": "D6", "value": 6, "icon": "icon"},
@@ -46,47 +47,50 @@ class _DicePageState extends State<DicePage> {
 
   Widget _setMultiWidget() {
     return Expanded(
+        flex: 1,
         child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        IconButton(
-            splashColor: Colors.redAccent[400],
-            onPressed: () => setState(() => _multi = 1),
-            icon: const Icon(Icons.clear)),
-        IconButton(
-            splashColor: Colors.amber[600],
-            onPressed: () => _multi > 1 ? setState(() => _multi--) : _multi,
-            icon: const Icon(Icons.remove)),
-        SizedBox(
-          height: 80,
-          width: 80,
-          child: Card(
-            child: Text(
-              "$_multi",
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 60),
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+                splashColor: Colors.redAccent[400],
+                onPressed: () => setState(() => _multi = 1),
+                icon: const Icon(Icons.clear)),
+            IconButton(
+                splashColor: Colors.amber[600],
+                onPressed: () => _multi > 1 ? setState(() => _multi--) : _multi,
+                icon: const Icon(Icons.remove)),
+            SizedBox(
+              height: 80,
+              width: 80,
+              child: Card(
+                child: Text(
+                  "$_multi",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 60),
+                ),
+              ),
             ),
-          ),
-        ),
-        IconButton(
-            splashColor: Colors.lightBlue[400],
-            onPressed: () => _multi < 20 ? setState(() => _multi++) : _multi,
-            icon: const Icon(Icons.add)),
-        IconButton(
-            splashColor: Colors.limeAccent[400],
-            onPressed: () =>
-                _multi < 15 ? setState(() => _multi = _multi + 5) : _multi,
-            icon: const Text("+5")),
-      ],
-    ));
+            IconButton(
+                splashColor: Colors.lightBlue[400],
+                onPressed: () =>
+                    _multi < 20 ? setState(() => _multi++) : _multi,
+                icon: const Icon(Icons.add)),
+            IconButton(
+                splashColor: Colors.limeAccent[400],
+                onPressed: () =>
+                    _multi < 15 ? setState(() => _multi = _multi + 5) : _multi,
+                icon: const Text("+5")),
+          ],
+        ));
   }
 
   Widget _diceGridView() {
     return Expanded(
+        flex: 2,
         child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GridView.count(crossAxisCount: 4, children: _setDiceList()),
-    ));
+          padding: const EdgeInsets.only(top: 3.0, right: 5, left: 5),
+          child: GridView.count(crossAxisCount: 4, children: _setDiceList()),
+        ));
   }
 
   void _verticalDrag(details) {
@@ -139,6 +143,7 @@ class _DicePageState extends State<DicePage> {
 
   Widget _setResults() {
     return Expanded(
+        flex: 1,
         child: (_rollResult["dieName"] == "")
             ? const Text("come on, roll some dice!!",
                 style: TextStyle(fontSize: 30))
@@ -146,11 +151,11 @@ class _DicePageState extends State<DicePage> {
                 children: [
                   Text(
                     "Roll ${_rollResult["multi"].toString()} ${_rollResult["dieName"].toString()}:",
-                    style: const TextStyle(fontSize: 45),
+                    style: const TextStyle(fontSize: 35),
                   ),
                   Text(
                     _rollResult["result"].toString(),
-                    style: const TextStyle(fontSize: 45),
+                    style: const TextStyle(fontSize: 35),
                   ),
                 ],
               ));
@@ -167,5 +172,6 @@ class _DicePageState extends State<DicePage> {
         "multi": _multi
       };
     });
+    notifyListeners();
   }
 }
